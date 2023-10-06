@@ -3,11 +3,11 @@ import { __dirname } from "./utils.js"
 import handlebars from "express-handlebars"
 import {Server} from "socket.io"
 
-import viewRouter from "./src/routes/view.router.js"
-import productRouter from "./src/routes/products.router.js"
-import cartRouter from "./src/routes/carts.router.js"
+import viewRouter from "./routes/view.router.js"
+import productRouter from "./routes/products.router.js"
+import cartRouter from "./routes/carts.router.js"
 
-import ProductManager from "./src/controllers/productManager.js"
+import ProductManager from "./controllers/productManager.js"
 
 const app =express()
 const PORT=8080;

@@ -1,7 +1,7 @@
 import {Router} from "express"
 import CartManager from "../controllers/cartManager.js"
-import { __dirname } from "../../utils.js"
-const manager=new CartManager(__dirname+'/files/carts.json')
+import { __dirname } from "../utils.js"
+const manager=new CartManager(__dirname+'/database/carts.json')
 const router =Router()
 
 router.get("/carts",async(req,res)=>{
