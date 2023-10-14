@@ -5,7 +5,7 @@
   "type": "module",
   "main": "index.js",
   "scripts": {
-    "start": "nodemon src/server.js"
+    "start": "nodemon src/app.js"
   },
   "keywords": [],
   "author": "",
@@ -13,7 +13,10 @@
   "dependencies": {
     "express": "^4.18.2",
     "express-handlebars": "^7.1.2",
-    "socket.io": "^4.7.2"
+    "mongoose": "^7.6.2",
+    "socket.io": "^4.7.2",
+    "sweetalert2": "^11.7.32",
+    "toastify": "^2.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"

@@ -1,18 +1,32 @@
-import {Router} from  "express"
-import ProductManager from "../controllers/productManager.js"
-import { __dirname } from "../utils.js"
+import { Router } from "express";
+import { __dirname } from "../utils.js";
+import ProductManager from "../dao/mongomanagers/productManagerMongo.js";
+const pmanager =new ProductManager()
+// import ProductManager from "../dao/filemanagers/controllers/productManager.js";
+// const pmanager=new ProductManager(__dirname+"/dao/filemanagers/db/products.json")
 
-const pmanager=new ProductManager(__dirname+'/database/products.json')
+const router =Router()
 
-const router=Router()
+
+// router.get("/",async(req,res)=>{
+//     const listadeproductos=await pmanager.getProducts({})
+//     console.log(listadeproductos)
+//     res.render("home",{listadeproductos})
+// })
 
 router.get("/",async(req,res)=>{
-  const listaproductos=await pmanager.getProducts({})
-  res.render("home",{listaproductos})
+        const listadeproductos=await pmanager.getProducts()
+        console.log(listadeproductos)
+        res.render("home",{listadeproductos})
+    })
+
+router.get("/realtimeproducts",(req,res)=>{
+    res.render("realtimeproducts")
 })
 
-router.get("/realtimeproducts",async(req,res)=>{
-   res.render("realTimeProducts")
+router.get("/chat",(req,res)=>{
+    res.render("chat")
 })
+
 
 export default router
