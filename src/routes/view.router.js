@@ -1,32 +1,23 @@
-import { Router } from "express";
-import { __dirname } from "../utils.js";
-import ProductManager from "../dao/mongomanagers/productManagerMongo.js";
-const pmanager =new ProductManager()
-// import ProductManager from "../dao/filemanagers/controllers/productManager.js";
-// const pmanager=new ProductManager(__dirname+"/dao/filemanagers/db/products.json")
+import { Router } from 'express';
+import ProductManager from "../dao/managers/productManagerMongo.js"
+const pm = new ProductManager()
 
-const router =Router()
+const routerV = Router()
 
 
-// router.get("/",async(req,res)=>{
-//     const listadeproductos=await pmanager.getProducts({})
-//     console.log(listadeproductos)
-//     res.render("home",{listadeproductos})
-// })
-
-router.get("/",async(req,res)=>{
-        const listadeproductos=await pmanager.getProducts()
-        console.log(listadeproductos)
-        res.render("home",{listadeproductos})
-    })
-
-router.get("/realtimeproducts",(req,res)=>{
-    res.render("realtimeproducts")
+routerV.get("/",async(req,res)=>{
+    const listadeproductos=await pm.getProductsView()
+    res.render("home",{listadeproductos})
 })
 
-router.get("/chat",(req,res)=>{
-    res.render("chat")
+routerV.get("/realtimeproducts",(req,res)=>{
+res.render("realtimeproducts")
+})
+
+routerV.get("/chat",(req,res)=>{
+res.render("chat")
 })
 
 
-export default router
+
+export default routerV

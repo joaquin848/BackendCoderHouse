@@ -7,37 +7,54 @@ socketClient.on("enviodeproducts",(obj)=>{
 
 
 function updateProductList(products) {
-    let div = document.getElementById("list-products");
+    let div = document.getElementById("contenedor");
     let productos = "";
   
     products.forEach((product) => {
       productos += `
-          <article class="container">
-        <div class="card">
-          <div class="imgBx">
-            <img src="${product.thumbnail}" width="150" />
-          </div>
-          <div class="contentBx">
-            <h2>${product.title}</h2>
-            <div class="size">
-              <h3>${product.description}</h3>
-              <span>7</span>
-              <span>8</span>
-              <span>9</span>
-              <span>10</span>
-            </div>
-            <div class="color">
-              <h3>${product.price}</h3>
-              <span></span>
-              <span></span>
-              <span></span>
-            </div>
-            <a href="#">Buy Now</a>
-          </div>
-        </div>
-        
-      </article>
           
+      <div class="card">
+      <div class="basicInfo">
+          <div class="title">
+              <div class="category">Nike</div>
+              <div class="name">${product.title}</div>
+              <div class="info">${product.description}</div>
+          </div>
+          <div class="images">
+              <div class="img">
+                  <div class="item">
+                      <img src="${product.thumbnail}">
+                  </div>
+                
+              </div>
+          </div>
+          <div class="colors">
+              <label for="green">
+                  <div class="name">ss</div>
+                  <div class="ellipse" style="background:#CADB6E"></div>
+              </label>
+
+              <label for="black">
+                  <div class="name">Black</div>
+                  <div class="ellipse" style="background:#2B2B2B"></div>
+              </label>
+          </div>
+          <div class="addCard">
+              <i class="fa-solid fa-basket-shopping"></i>
+          </div>
+      </div>
+      <div class="mores">
+          <div class="stars">
+              <i class="fa-regular fa-star text-yellow"></i>
+              <i class="fa-regular fa-star text-yellow"></i>
+              <i class="fa-regular fa-star text-yellow"></i>
+              <i class="fa-regular fa-star text-yellow"></i>
+              <i class="fa-regular fa-star"></i>
+          </div>
+          <div class="price">${product.price}</div>
+      </div>
+
+  </div>
           `;
     });
   
