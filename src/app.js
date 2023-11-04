@@ -10,7 +10,9 @@ import routerC from './routes/carts.router.js';
 import session from "express-session";
 import Filestore from "session-file-store";
 import mongoStore from "connect-mongo";
-import databaseConnection from "./config/db.js"
+import passport from "passport";
+import "./passport.js";
+import databaseConnection from "./config/db.js";
 
 //socketservers
 import socketProducts from "./listeners/socketProducts.js"
@@ -39,25 +41,26 @@ app.use(express.urlencoded({ extended: true }));
 //   })
 // );
 
-// session mongo
-const URI =
-"mongodb+srv://joaquin:lajori848@codercluster.hkzyxhs.mongodb.net/ecommerce?retryWrites=true&w=majority";
+//session mongo
 app.use(
-  session({
-    secret: "SESSIONSECRETKEY",
-    cookie: {
-      maxAge: 60 * 60 * 1000,
-    },
-    store: new mongoStore({
-      mongoUrl: URI,
-    }),
-  })
-);
+    session({
+      store: new mongoStore({
+        mongoUrl:
+          "mongodb+srv://joaquin:lajori848@codercluster.hkzyxhs.mongodb.net/ecommerce?retryWrites=true&w=majority",
+      }),
+      secret: "SESSION_KEY",
+      cookie: { maxAge: 60000 },
+    })
+  );
 
 // handlebars
 app.engine("handlebars", handlebars.engine());
 app.set("view engine", "handlebars");
 app.set("views", __dirname + "/views");
+
+//passport
+app.use(passport.initialize());
+app.use(passport.session());
 
 // routes
 app.use("/api/users", usersRouter);

@@ -18,6 +18,10 @@ router.get("/home", (req, res) => {
   res.render("home", { email, first_name });
 });
 
+router.get("/error", (req, res) => {
+    res.render("error");
+  });
+
 router.get("/",async(req,res)=>{
     const listadeproductos=await pm.getProductsView()
     res.render("home",{listadeproductos})
