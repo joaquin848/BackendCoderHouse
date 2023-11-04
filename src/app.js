@@ -1,69 +1,91 @@
-//Imports
-import "dotenv/config";
 import express from "express";
-import session from "express-session";
-import MongoStore from "connect-mongo";
-import morgan from "morgan";
 import cookieParser from "cookie-parser";
-import productRoute from "./routes/productsRoute.js";
-import cartRoute from "./routes/cartRoute.js";
-import sessionRoute from "./routes/sessionRoute.js";
-import viewsRoute from "./routes/viewsRoute.js";
-import errorHandlerMiddleware from "./middlewares/errorHandlerMiddleware.js";
-import { engine } from "express-handlebars";
+import handlebars from "express-handlebars";
+import { Server } from 'socket.io';
 import { __dirname } from "./utils.js";
-import { Server } from "socket.io";
-import { getAllProductsHandler, messagesHandler } from "./handlers/handlers.js";
-import databaseConnection from "./config/databaseConnection.js";
+import viewsRouter from "./routes/views.router.js";
+import usersRouter from "./routes/users.router.js";
+import routerP from './routes/products.router.js';
+import routerC from './routes/carts.router.js';
+import session from "express-session";
+import Filestore from "session-file-store";
+import mongoStore from "connect-mongo";
+import databaseConnection from "./config/db.js"
 
-//Variables
+//socketservers
+import socketProducts from "./listeners/socketProducts.js"
+import socketChat from './listeners/socketChat.js';
+
+
 const app = express();
+const PORT = 3000;
 
-//Configuration
+app.use(express.static(__dirname+"/public"));
+app.use(cookieParser());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-app.use(express.static(__dirname + "/public"));
-app.use(morgan("dev"));
-app.use(cookieParser(process.env.COOKIE_SECRET));
-app.engine("handlebars", engine());
-app.set("views", __dirname + "/views");
-app.set("view engine", "handlebars");
+
+// session file
+// const fileStore = FileStore(session);
+// app.use(
+//   session({
+//     secret: "SESSIONSECRETKEY",
+//     cookie: {
+//       maxAge: 60 * 60 * 1000,
+//     },
+//     store: new fileStore({
+//       path: __dirname + "/sessions",
+//     }),
+//   })
+// );
+
+// session mongo
+const URI =
+"mongodb+srv://joaquin:lajori848@codercluster.hkzyxhs.mongodb.net/ecommerce?retryWrites=true&w=majority";
 app.use(
   session({
-    secret: process.env.COOKIE_SECRET,
-    resave: false,
-    saveUninitialized: false,
-    cookie: { maxAge: 60 * 60 * 1000 },
-    store: MongoStore.create({
-      mongoUrl: process.env.DB_URI,
-      mongoOptions: {
-        useNewUrlParser: true,
-        useUnifiedTopology: true,
-      },
-      ttl: 15,
+    secret: "SESSIONSECRETKEY",
+    cookie: {
+      maxAge: 60 * 60 * 1000,
+    },
+    store: new mongoStore({
+      mongoUrl: URI,
     }),
   })
 );
 
-//Routes
-app.use("/api/carts", cartRoute);
-app.use("/api/products", productRoute);
-app.use("/api/sessions", sessionRoute);
-app.use("/", viewsRoute);
+// handlebars
+app.engine("handlebars", handlebars.engine());
+app.set("view engine", "handlebars");
+app.set("views", __dirname + "/views");
 
-//Global middlewares
-app.use(errorHandlerMiddleware);
+// routes
+app.use("/api/users", usersRouter);
+app.use('/api/products', routerP)
+app.use('/api/carts', routerC)
+app.use("/", viewsRouter);
 
-const httpServer = app.listen(8080, () => {
-  console.log(`Listening on port 8080`);
-  databaseConnection();
+databaseConnection()
+
+const httpServer = app.listen(PORT, () => {
+    try {
+        console.log(`Listening to the port ${PORT}\nAcceder a:`);
+        console.log(`\t1). http://localhost:${PORT}/api/products`)
+        console.log(`\t2). http://localhost:${PORT}/api/carts`);
+    }
+    catch (err) {
+        console.log(err);
+    }
 });
 
-const socketServer = new Server(httpServer);
+const socketServer = new Server(httpServer)
 
-const onConnection = async (socket) => {
-  await getAllProductsHandler(socketServer, socket);
-  await messagesHandler(socketServer, socket);
-};
+socketProducts(socketServer)
+socketChat(socketServer)
+//  socketServer.on('connection',socket=>{
+//     socketChat(socketServer,socket);
+//  })
 
-socketServer.on("connection", onConnection);
+//app.listen(3000, () => {
+//  console.log("Server is running on port 3000");
+//});
